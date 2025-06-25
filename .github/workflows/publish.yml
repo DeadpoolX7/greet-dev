@@ -13,21 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org/'
+          cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 # or latest version you prefer
 
       - name: Install dependencies
         run: pnpm install
 
-    #   - name: Run build
-    #     run: pnpm run build # Remove if your project has no build step
+    #   - name: Build (if needed)
+    #     run: pnpm run build
+    #     continue-on-error: true # in case your project doesn't have a build step
 
       - name: Bump version and push tag
         run: |
