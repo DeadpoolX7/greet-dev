@@ -34,6 +34,12 @@ greet-dev -n Bob -t neon
 
 ---
 
+## Screenshot
+
+![terminal-image](greet-dev-terminal.png)
+
+---
+
 ## Usage
 
 - Default greeting: `greet-dev`
