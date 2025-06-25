@@ -1,6 +1,6 @@
 {
   "name": "greet-dev",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple, elegant CLI to greet developers with motivational quotes",
   "main": "index.js",
   "type": "module",
@@ -9,6 +9,13 @@
   },
   "scripts": {
     "start": "node index.js"
+  },
+    "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeadpoolX7/greet-dev"
+  },
+  "bugs": {
+    "url": "https://github.com/DeadpoolX7/greet-dev/issues"
   },
   "files": [
   "index.js",
