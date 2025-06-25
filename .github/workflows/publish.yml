@@ -18,25 +18,24 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org/'
-          cache: 'pnpm'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8 # or latest version you prefer
+          version: 10 # You can change this to whatever PNPM version your project uses
 
       - name: Install dependencies
         run: pnpm install
 
-    #   - name: Build (if needed)
+    #   - name: Build
     #     run: pnpm run build
-    #     continue-on-error: true # in case your project doesn't have a build step
+    #     continue-on-error: true
 
       - name: Bump version and push tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          npm version patch -m "chore: bump version to %s [skip ci]"
+          pnpm version patch --message "chore: bump version to %s [skip ci]"
           git push origin main --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
