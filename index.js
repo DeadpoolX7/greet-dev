@@ -13,40 +13,51 @@ const __dirname = path.dirname(__filename);
 
 // Load motivational quotes from JSON file
 const quotes = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'data', 'quotes.json'), 'utf8')
+    fs.readFileSync(path.join(__dirname, 'data', 'quotes.json'), 'utf8')
 );
 
 // Load package metadata
 const pkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
+    fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
 );
 
 /**
  * Selects a random quote from the quotes array.
  * @returns {string} A random motivational quote.
  */
-function getRandomQuote() {
-  return quotes[Math.floor(Math.random() * quotes.length)];
+
+function getRandomCategorizedQuote(targetCategory) {
+    const quotesArr = quotes.filter(q =>
+        q.category.toLowerCase() === targetCategory.toLowerCase()
+    );
+
+    if (quotesArr.length === 0) {
+        return "No quotes found in this category.";
+    }
+
+    return quotesArr[Math.floor(Math.random() * quotesArr.length)].quote;
 }
 
 // Define available border styles
 const borderStyles = {
-  single: {
-    topLeft: '┌', top: '─', topRight: '┐',
-    left: '│', right: '│',
-    bottomLeft: '└', bottom: '─', bottomRight: '┘'
-  },
-  double: {
-    topLeft: '╔', top: '═', topRight: '╗',
-    left: '║', right: '║',
-    bottomLeft: '╚', bottom: '═', bottomRight: '╝'
-  },
-  round: {
-    topLeft: '╭', top: '─', topRight: '╮',
-    left: '│', right: '│',
-    bottomLeft: '╰', bottom: '─', bottomRight: '╯'
-  }
+    single: {
+        topLeft: '┌', top: '─', topRight: '┐',
+        left: '│', right: '│',
+        bottomLeft: '└', bottom: '─', bottomRight: '┘'
+    },
+    double: {
+        topLeft: '╔', top: '═', topRight: '╗',
+        left: '║', right: '║',
+        bottomLeft: '╚', bottom: '═', bottomRight: '╝'
+    },
+    round: {
+        topLeft: '╭', top: '─', topRight: '╮',
+        left: '│', right: '│',
+        bottomLeft: '╰', bottom: '─', bottomRight: '╯'
+    }
 };
+
+const categories = [...new Set(quotes.map(q => q.category.toLowerCase()))];
 
 // Emojis for greeting and quote
 const GREETING_EMOJI = '👋';
@@ -54,83 +65,98 @@ const QUOTE_EMOJI = '💡';
 
 // Helper to center-align text in a given width
 function centerText(text, width) {
-  const len = text.replace(/\x1b\[[0-9;]*m/g, '').length; // strip ANSI
-  if (len >= width) return text;
-  const pad = width - len;
-  const padLeft = Math.floor(pad / 2);
-  const padRight = pad - padLeft;
-  return ' '.repeat(padLeft) + text + ' '.repeat(padRight);
+    const len = text.replace(/\x1b\[[0-9;]*m/g, '').length; // strip ANSI
+    if (len >= width) return text;
+    const pad = width - len;
+    const padLeft = Math.floor(pad / 2);
+    const padRight = pad - padLeft;
+    return ' '.repeat(padLeft) + text + ' '.repeat(padRight);
 }
 
 // Boxed layout printer
-function printBoxedGreeting({ name, theme, borderStyle }) {
-  const selectedTheme = themes[theme] || themes.dark;
-  const selectedBorder = borderStyles[borderStyle] || borderStyles.single;
-  const quote = getRandomQuote();
+function printBoxedGreeting({ name, theme, borderStyle, category }) {
+    const selectedTheme = themes[theme] || themes.dark;
+    const selectedBorder = borderStyles[borderStyle] || borderStyles.single;
+    const quote = getRandomCategorizedQuote(category);
 
-  // Prepare lines
-  const greetingLine = `${GREETING_EMOJI} Hello, ${name}!`;
-  const quoteLine = `${QUOTE_EMOJI} "${quote}"`;
+    // Prepare lines
+    const greetingLine = `${GREETING_EMOJI} Hello, ${name}!`;
+    const categoryLine = `${category.toUpperCase()}`
+    const quoteLine = `${QUOTE_EMOJI} "${quote}"`;
 
-  // Determine box width (max line length + padding)
-  const contentLines = [greetingLine, quoteLine];
-  const contentWidth = Math.max(...contentLines.map(l => l.length));
-  const boxWidth = Math.max(50, contentWidth + 4);
+    // Determine box width (max line length + padding)
+    const contentLines = [greetingLine, categoryLine, quoteLine];
+    const contentWidth = Math.max(...contentLines.map(l => l.length));
+    const boxWidth = Math.max(50, contentWidth + 4);
 
-  // Build box
-  const top = selectedTheme.border(
-    selectedBorder.topLeft +
-    selectedBorder.top.repeat(boxWidth - 2) +
-    selectedBorder.topRight
-  );
-  const bottom = selectedTheme.border(
-    selectedBorder.bottomLeft +
-    selectedBorder.bottom.repeat(boxWidth - 2) +
-    selectedBorder.bottomRight
-  );
-  const empty = selectedTheme.border(selectedBorder.left) +
-    ' '.repeat(boxWidth - 2) +
-    selectedTheme.border(selectedBorder.right);
+    // Build box
+    const top = selectedTheme.border(
+        selectedBorder.topLeft +
+        selectedBorder.top.repeat(boxWidth - 2) +
+        selectedBorder.topRight
+    );
+    const bottom = selectedTheme.border(
+        selectedBorder.bottomLeft +
+        selectedBorder.bottom.repeat(boxWidth - 2) +
+        selectedBorder.bottomRight
+    );
+    const empty = selectedTheme.border(selectedBorder.left) +
+        ' '.repeat(boxWidth - 2) +
+        selectedTheme.border(selectedBorder.right);
 
-  // Print box
-  console.log('\n' + top);
-  console.log(empty);
-  console.log(
-    selectedTheme.border(selectedBorder.left) +
-    selectedTheme.name(centerText(greetingLine, boxWidth - 2)) +
-    selectedTheme.border(selectedBorder.right)
-  );
-  console.log(
-    selectedTheme.border(selectedBorder.left) +
-    selectedTheme.quote(centerText(quoteLine, boxWidth - 2)) +
-    selectedTheme.border(selectedBorder.right)
-  );
-  console.log(empty);
-  console.log(bottom + '\n');
+    // Print box
+    console.log('\n' + top);
+    console.log(empty);
+    console.log(
+        selectedTheme.border(selectedBorder.left) +
+        selectedTheme.name(centerText(greetingLine, boxWidth - 2)) +
+        selectedTheme.border(selectedBorder.right)
+    );
+    console.log(
+        selectedTheme.border(selectedBorder.left) +
+        selectedTheme.category(centerText(categoryLine, boxWidth - 2)) +
+        selectedTheme.border(selectedBorder.right)
+    );
+    console.log(
+        selectedTheme.border(selectedBorder.left) +
+        selectedTheme.quote(centerText(quoteLine, boxWidth - 2)) +
+        selectedTheme.border(selectedBorder.right)
+    );
+    console.log(empty);
+    console.log(bottom + '\n');
 }
 
 // Configure CLI options and actions
 program
-  .version(pkg.version)
-  .description('A CLI tool to greet developers with style and motivation')
-  .option('-n, --name <name>', 'Your name for a personalized greeting', 'Developer')
-  .option('-t, --theme <theme>', 'Choose a theme (dark, light, neon, ...)', 'dark')
-  .option('-b, --border <border>', 'Border style (single, double, round)', 'single')
-  .action(({ name, theme, border }) => {
-    if (!themes[theme]) {
-      console.log(
-        chalk.red(`Invalid theme! Available themes: ${Object.keys(themes).join(', ')}`)
-      );
-      process.exit(1);
-    }
-    if (!borderStyles[border]) {
-      console.log(
-        chalk.red(`Invalid border! Available borders: ${Object.keys(borderStyles).join(', ')}`)
-      );
-      process.exit(1);
-    }
-    printBoxedGreeting({ name, theme, borderStyle: border });
-  });
+    .version(pkg.version)
+    .description('A CLI tool to greet developers with style and motivation')
+    .option('-n, --name <name>', 'Your name for a personalized greeting', 'Developer')
+    .option('-t, --theme <theme>', 'Choose a theme (dark, light, neon, ...)', 'dark')
+    .option('-b, --border <border>', 'Border style (single, double, round)', 'single')
+    .option('-c, --category <category>', 'Quote category (motivation, productivity, debugging)', 'motivation')
+    .action(({ name, theme, border, category }) => {
+        const normalizedCategory = category.toLowerCase();
+
+        if (!themes[theme]) {
+            console.log(
+                chalk.red(`Invalid theme! Available themes: ${Object.keys(themes).join(', ')}`)
+            );
+            process.exit(1);
+        }
+        if (!borderStyles[border]) {
+            console.log(
+                chalk.red(`Invalid border! Available borders: ${Object.keys(borderStyles).join(', ')}`)
+            );
+            process.exit(1);
+        }
+        if (!categories.includes(normalizedCategory)) {
+            console.log(
+                chalk.red(`Invalid category! Available categories: ${categories.join(', ')}`)
+            );
+            process.exit(1);
+        }
+        printBoxedGreeting({ name, theme, borderStyle: border, category: normalizedCategory });
+    });
 
 // Parse command-line arguments
 program.parse(process.argv);
