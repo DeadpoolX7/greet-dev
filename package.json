@@ -1,6 +1,6 @@
 {
   "name": "greet-dev",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple, elegant CLI to greet developers with motivational quotes",
   "main": "index.js",
   "type": "module",
