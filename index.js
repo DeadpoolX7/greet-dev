@@ -5,30 +5,13 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import themes from './themes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const quotes = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'quotes.json'), 'utf8'));
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
-
-const themes = {
-  dark: {
-    name: chalk.cyan.bold,
-    quote: chalk.whiteBright,
-    border: chalk.blueBright,
-  },
-  light: {
-    name: chalk.blue.bold,
-    quote: chalk.blackBright,
-    border: chalk.gray,
-  },
-  neon: {
-    name: chalk.magenta.bold,
-    quote: chalk.greenBright,
-    border: chalk.yellow,
-  },
-};
 
 function getRandomQuote() {
   return quotes[Math.floor(Math.random() * quotes.length)];
