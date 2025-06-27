@@ -9,6 +9,7 @@ A simple, elegant CLI tool to greet developers with motivational quotes. Built w
 - Personalized greetings with customizable names.
 - Multiple themes (dark, light, neon) for stylish terminal output.
 - 50+ curated quotes to inspire developers.
+- Choose the quote categories you need at the moment!
 - Lightweight and fast, with easy setup.
 
 ---
