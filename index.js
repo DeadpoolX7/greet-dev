@@ -27,15 +27,16 @@ const pkg = JSON.parse(
  */
 
 function getRandomCategorizedQuote(targetCategory) {
-    const quotesArr = quotes.filter(q =>
-        q.category.toLowerCase() === targetCategory.toLowerCase()
+    const categoryEntry = quotes.find(
+        q => q.category.toLowerCase() === targetCategory.toLowerCase()
     );
 
-    if (quotesArr.length === 0) {
+    if (!categoryEntry || !categoryEntry.quotes.length) {
         return "No quotes found in this category.";
     }
 
-    return quotesArr[Math.floor(Math.random() * quotesArr.length)].quote;
+    const quotesArr = categoryEntry.quotes;
+    return quotesArr[Math.floor(Math.random() * quotesArr.length)];
 }
 
 // Define available border styles
@@ -57,7 +58,7 @@ const borderStyles = {
     }
 };
 
-const categories = [...new Set(quotes.map(q => q.category.toLowerCase()))];
+const categories = quotes.map(q => q.category.toLowerCase());
 
 // Emojis for greeting and quote
 const GREETING_EMOJI = '👋';
