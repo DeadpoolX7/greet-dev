@@ -37,7 +37,7 @@ greet-dev -n Bob -t neon
 
 ## Screenshot
 
-![terminal-image](greet-dev-terminal.png)
+![terminal-image](assets/greet-dev-v1.0.6.png)
 
 ---
 
@@ -46,6 +46,7 @@ greet-dev -n Bob -t neon
 - Default greeting: `greet-dev`
 - Personalized greeting: `greet-dev -n Alice`
 - Themed greeting: `greet-dev -n Bob -t neon`
+- Choose category : `greet-dev -c productivity -n Tony -t midnight`
 - Show version: `greet-dev --version`
 - Show help: `greet-dev --help`
 
@@ -56,7 +57,9 @@ greet-dev -n Bob -t neon
 - **dark** (default): Cyan name, white quote, blue border.
 - **light**: Blue name, black quote, gray border.
 - **neon**: Magenta name, green quote, yellow border.
+- **midnight**: Blue-violet name, light-grey quote, midnigth border.
 
+- Explore `data/themes.js` file to know more.
 ---
 
 ## Project Structure
